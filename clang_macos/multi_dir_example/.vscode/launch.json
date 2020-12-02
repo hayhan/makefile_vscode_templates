@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(gdb) Launch",
+            "name": "clang++/make - Build and debug active file",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/app.out",
@@ -14,16 +14,8 @@
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
-            "MIMode": "gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "build",
-            "miDebuggerPath": "/usr/bin/gdb"
+            "MIMode": "lldb",
+            "preLaunchTask": "build"
         }
     ]
 }

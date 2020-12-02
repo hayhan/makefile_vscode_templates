@@ -1,3 +1,5 @@
+The project doesn't integrate Makefile with vscode. Put the Makefile at the top directory to work with vscode. See the multi_dir_example2.
+
 app is the target. It includes comp1_file1.h/comp2_file1.h/comp3_file1.h.
 comp1_file1 has dependency on comp2_file2.
 comp2_file1 has dependency on comp2_file2.
