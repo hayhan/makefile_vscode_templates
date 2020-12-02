@@ -1,0 +1,125 @@
+ref link:
+https://stackoverflow.com/questions/17896751/makefile-use-multiple-makefiles
+--------------------------------------------
+all:
+    @$(MAKE) -C subfolder
+
+or if you want to use *.mk as your sub makefile, you can write:
+
+all:
+    @$(MAKE) -C busfolder -f somename.mk
+--------------------------------------------
+TOPDIR-- Makefile
+|
+|-- debug
+|   |-- debug.c
+|   |-- debug.h
+|   |-- debug.mk
+|   |-- instrument.c
+|   `-- uart_print.c
+|-- driver
+|   |-- driver.c
+|   |-- driver_ddi.c
+|   |-- driver_ddi.h
+|   |-- driver.h
+|   `-- driver.mk
+|-- include
+|   `-- common.h
+|-- Makefile
+|-- mw
+|   |-- manager.c
+|   `-- mw.mk
+|-- root
+|   |-- main.c
+|   `-- root.mk
+
+and my TOP makefile looks like:
+MAKE_DIR = $(PWD)
+
+ROOT_DIR    := $(MAKE_DIR)/root
+DRV_DIR     := $(MAKE_DIR)/driver
+INCLUDE_DIR := $(MAKE_DIR)/include
+DEBUG_DIR   := $(MAKE_DIR)/debug
+
+INC_SRCH_PATH :=
+INC_SRCH_PATH += -I$(ROOT_DIR)
+INC_SRCH_PATH += -I$(DRV_DIR)
+INC_SRCH_PATH += -I$(INCLUDE_DIR)
+INC_SRCH_PATH += -I$(DEBUG_DIR)
+
+LIB_SRCH_PATH :=
+LIB_SRCH_PATH += -L$(MAKE_DIR)/libs
+
+
+COLOR_ON = color
+COLOR_OFF =
+CC = $(COLOR_ON)gcc
+#CC = $(COLOR_OFF)gcc
+LD = ld
+
+LINT = splint
+
+LIBS := -ldriver -ldebug -lmw -lm -lpthread
+
+CFLAGS :=
+CFLAGS += $(INC_SRCH_PATH) $(LIB_SRCH_PATH)
+CFLAGS += -Wall -O -ggdb -Wstrict-prototypes -Wno-pointer-sign -finstrument-functions -fdump-rtl-expand
+CFLAGS += -DDEBUG -D_REENTRANT
+
+LDFLAGS :=
+
+# Deliver variables below to sub makefiles
+export MAKE_DIR CC LD CFLAGS LDFLAGS LIBS LINT INC_SRCH_PATH
+
+all:
+    @$(MAKE) -C debug -f debug.mk
+    @$(MAKE) -C driver -f driver.mk
+    @$(MAKE) -C mw -f mw.mk
+    @$(MAKE) -C root -f root.mk
+
+.PHONY: clean
+clean:
+    @$(MAKE) -C debug -f debug.mk clean
+    @$(MAKE) -C driver -f driver.mk clean
+    @$(MAKE) -C mw -f mw.mk clean
+    @$(MAKE) -C root -f root.mk clean
+
+--------one sub makefile that generates a static lib---------
+LIB = $(MAKE_DIR)/libs/yourmodulename.a
+SRCS = $(wildcard *.c)
+OBJS = $(patsubst %.c, %.o, $(SRCS))
+
+$(LIB): $(OBJS)
+    @mkdir -p ../libs
+    @$(AR) cr $@ $^
+    @echo "    Archive    $(notdir $@)"
+
+$(OBJS): $(SRCS)
+    @$(CC) $(CFLAGS) -c $^
+    @echo "    CC        $(OBJS)"
+
+.PHONY: clean
+clean:
+    @$(RM) -f $(LIB) $(OBJS)
+    @$(RM) -f *.expand
+    @echo "    Remove Objects:   $(OBJS)"
+
+------one sub makefile (root.mk) that generates the final exec target----
+PROG = ../prog/DEMO
+
+SRCS = $(wildcard *.c)
+OBJS = $(patsubst %.c, %.o, $(SRCS))
+
+$(PROG): $(SRCS)
+    @mkdir -p ../prog
+    @$(CC) $^ $(CFLAGS) -Wl,-Map=$(PROG).map $(LIBS) -o $@
+    @echo "    Generate Program $(notdir $(PROG)) from $^"
+
+.PHONY: clean
+clean:
+    @$(RM) -f $(OBJS) $(PROG)
+    @$(RM) -f *.expand
+    @$(RM) -rf ../prog ../libs
+    @echo "    Remove Objects:   $(OBJS)"
+    @echo "    Remove Libraries:  $(notdir $(PROG))"
+

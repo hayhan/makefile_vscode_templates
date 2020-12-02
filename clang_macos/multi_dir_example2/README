@@ -1,0 +1,15 @@
+This version of multi_dir_example has Makefile in the top level dir, so vscode
+can recognize w/o more config. The Makefile works with build/debug in vscode.
+
+app is the target. It includes comp1_file1.h/comp2_file1.h/comp3_file1.h.
+comp1_file1 has dependency on comp2_file2.
+comp2_file1 has dependency on comp2_file2.
+comp3_file1 has dependency on comp3_file2.
+
+If do not use Makefile to build, use g++ directly under source/app:
+clang++ -g -I../comp1 -I../comp2 -I../comp3 -o app.out app.cpp ../comp*/*.cpp
+
+For Makefile wherein "clang++ -c" and "clang++ -o" are separated, the debug flag
+is in the former one, e.g. "clang++ -g -c", not the latter one.
+
+Verified build/debug with clang++/Makefile in vscode on macOS.

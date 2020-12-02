@@ -1,0 +1,11 @@
+This version of multi_dir_example has Makefile in the top level dir, so vscode
+can recognize w/o more config. The Makefile works with build/debug in vscode.
+
+app is the target. It includes comp1_file1.h/comp2_file1.h/comp3_file1.h.
+comp1_file1 has dependency on comp2_file2.
+comp2_file1 has dependency on comp2_file2.
+comp3_file1 has dependency on comp3_file2.
+
+If do not use Makefile to build, use g++ directly under source/app:
+g++ -I../comp1 -I../comp2 -I../comp3 -o app.out app.cpp ../comp*/*.cpp
+

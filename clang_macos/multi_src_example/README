@@ -1,0 +1,4 @@
+If do not use Makefile, run g++ directly in the top dir:
+clang++ -std=c++17 -g -Iinclude src/HelloWorld.cpp src/main.cpp -o bin/main
+
+With the tasks.jason and launch.jason in .vscode folder, the build/debug works with Makefile in vscode.

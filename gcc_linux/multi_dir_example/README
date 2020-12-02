@@ -1,0 +1,74 @@
+app is the target. It includes comp1_file1.h/comp2_file1.h/comp3_file1.h.
+comp1_file1 has dependency on comp2_file2.
+comp2_file1 has dependency on comp2_file2.
+comp3_file1 has dependency on comp3_file2.
+
+If do not use Makefile to build, use g++ directly under source/app:
+g++ -I../comp1 -I../comp2 -I../comp3 -o app.out app.cpp ../comp*/*.cpp
+
+├── README
+├── build
+│   └── Makefile
+└── source
+    ├── app
+    │   ├── app.cpp
+    │   └── app.out
+    ├── comp1
+    │   ├── comp1_file1.cpp
+    │   ├── comp1_file1.h
+    │   ├── comp1_file2.cpp
+    │   └── comp1_file2.h
+    ├── comp2
+    │   ├── comp2_file1.cpp
+    │   ├── comp2_file1.h
+    │   ├── comp2_file2.cpp
+    │   └── comp2_file2.h
+    └── comp3
+        ├── comp3_file1.cpp
+        ├── comp3_file1.h
+        ├── comp3_file2.cpp
+        └── comp3_file2.h
+
+If use Makefile to build, go to build directory to run make.
+
+├── README
+├── build
+│   ├── Makefile
+│   ├── app
+│   │   ├── app.d
+│   │   └── app.o
+│   ├── app.out
+│   ├── comp1
+│   │   ├── comp1_file1.d
+│   │   ├── comp1_file1.o
+│   │   ├── comp1_file2.d
+│   │   └── comp1_file2.o
+│   ├── comp2
+│   │   ├── comp2_file1.d
+│   │   ├── comp2_file1.o
+│   │   ├── comp2_file2.d
+│   │   └── comp2_file2.o
+│   └── comp3
+│       ├── comp3_file1.d
+│       ├── comp3_file1.o
+│       ├── comp3_file2.d
+│       └── comp3_file2.o
+└── source
+    ├── app
+    │   ├── app.cpp
+    │   └── app.out
+    ├── comp1
+    │   ├── comp1_file1.cpp
+    │   ├── comp1_file1.h
+    │   ├── comp1_file2.cpp
+    │   └── comp1_file2.h
+    ├── comp2
+    │   ├── comp2_file1.cpp
+    │   ├── comp2_file1.h
+    │   ├── comp2_file2.cpp
+    │   └── comp2_file2.h
+    └── comp3
+        ├── comp3_file1.cpp
+        ├── comp3_file1.h
+        ├── comp3_file2.cpp
+        └── comp3_file2.h
